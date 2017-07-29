@@ -15,7 +15,7 @@ public class TwoPhaseCommitKeyValueStore implements IKeyValueStore {
 			IWriteOperation op = new SetOperation(key, value);
 			if (this.TwoPhaseCommit(op))
 			{
-				this.localHashtable.put(key, value);
+				op.Apply(this.localHashtable);
 			}
 		}
 	}
@@ -25,12 +25,15 @@ public class TwoPhaseCommitKeyValueStore implements IKeyValueStore {
 			IWriteOperation op = new RemoveOperation(key);
 			if (this.TwoPhaseCommit(op))
 			{
-				this.localHashtable.remove(key);
+				op.Apply(this.localHashtable);
 			}
 		}
 	}
 	
 	private Boolean TwoPhaseCommit(IWriteOperation op) {
 		return true;
+		// send write operation to secondaries
+		// wait for reply from all secondaries confirming receipt
+		// send message to secondaries confirming all confirmed
 	}
 }
